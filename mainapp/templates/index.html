@@ -1,0 +1,89 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&display=swap" rel="stylesheet">
+  <title>Crew Sense</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
+  <script src="{% static 'js/script.js' %}" defer></script>
+</head>
+<body>
+  <div class="navbar">
+    <div class="brand">Crew Sense</div>
+    <button class="btn-signin">Sign In</button>
+  </div>
+  
+  <!-- Tab Container -->
+  <div class="tab-container">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-link active" onclick="openTab(event, 'text')">Text</button>
+      <button class="tab-link" onclick="openTab(event, 'image')">Image</button>
+      <button class="tab-link" onclick="openTab(event, 'documents')">Documents</button>
+    </div>
+    
+    <!-- Language Container -->
+    <div class="lang-tab-container">
+      <!-- Left Language Buttons -->
+      <div class="left-language-container">
+        <button class="language-button selected" id="left-english-btn">English</button>
+        <button class="language-button" id="left-braille-btn">Braille</button>
+      </div>
+      
+      <div class="swap-icon">
+        <button class="swap-button">
+          <img src="{% static 'assets/Vector.svg' %}" alt="swap-icon">
+        </button>
+      </div>
+      
+      <!-- Right Language Buttons -->
+      <div class="right-language-container">
+        <button class="language-button" id="right-english-btn">English</button>
+        <button class="language-button selected" id="right-braille-btn">Braille</button>
+      </div>
+    </div>
+    
+    
+    <!-- Tab Content -->
+    <div id="text" class="tab-content">
+      <div class="content-area">
+        <!-- Left Content Box -->
+        <div class="content-box-left">
+          <textarea class="text-input" placeholder="Type here..."></textarea>
+          <button class="listen-button">
+            <div class="icon">
+              <img src="{% static 'assets/Speaker.svg' %}" alt="Speaker Icon">
+            </div>
+            <div class="label"></div>
+          </button>
+        </div>
+        
+        <!-- Right Content Box -->
+        <div class="content-box-right">
+          <textarea class="text-input" placeholder="Translation"></textarea>
+          <button class="copy-button">
+            <div class="icon">
+              <img src="{% static 'assets/Copy.svg' %}" alt="Copy Icon">
+            </div>
+            <div class="label"></div>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="image" class="tab-content" style="display: none;">
+      <p class="text-center">Image content goes here.</p>
+    </div>
+    
+    <div id="documents" class="tab-content" style="display: none;">
+      <p class="text-center">Documents content goes here.</p>
+    </div>
+  </div>
+</body>
+</html>

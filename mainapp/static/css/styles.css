@@ -1,0 +1,151 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #060B2D, #222964, #060B2D);
+    color: white;
+    padding: 10px 20px;
+    height: 50px;
+}
+.navbar .brand {
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    padding-left: 35px;
+    font-size: 24px;
+    align-content: center;
+}
+
+.navbar .btn-signin {
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    background: white;
+    color: #060B2D;
+    display: flex; 
+    justify-content: center; 
+    padding-top: 8px;
+    border: none;
+    border-radius: 18px;
+    cursor: pointer;
+    height: 35px;
+    width: 100px;
+    margin-right: 22px;
+}
+
+.navbar .btn-signin:hover {
+    background: #e4e4e4;
+}
+
+.tab-container {
+    max-width: 1530px;
+    max-height: 600px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.tabs {
+    display: flex;
+    margin-bottom: 45px;
+    justify-content: center;
+    gap: 20px;
+}
+.tabs button {
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    background: none;
+    border: none;
+    color: #060B2D;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 18px;
+    transition: background 0.3s;
+}
+.tabs button.active {
+    background: linear-gradient(45deg, #060B2D, #222964, #060B2D);
+    color: white;
+}
+.tabs button:hover {
+    background: #dcdcdc;
+}
+
+.content-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 0px;
+}
+
+.content-box-left {
+    flex: 1;
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-top: -10px;
+    margin-right: 10px;
+    border: 1px solid rgba(105, 105, 105, 0.64);
+    font-size: 18px;
+    position: relative;
+    height: 350px;
+}
+
+.text-input {
+    font-size: 18px;
+    width: 100%; 
+    height: 100%; 
+    color: #060B2D;
+    border: none;
+    outline: none;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    resize: none; 
+    background: transparent; 
+}
+
+.content-box-right{
+    flex: 1;
+    background: rgba(105, 105, 105, 0.1);
+    border-radius: 20px;
+    margin-left: 10px;
+    padding: 20px;
+    margin-top: -10px;
+    border: none;
+    font-size: 18px;
+    position: relative;
+    height: 350px;
+}
+
+.content-box p {
+    margin: 0;
+}
+
+.lang-tab-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px; 
+    position: relative; 
+    z-index: 1;
+}
+
+.left-language-container {
+    display: flex;
+    margin-left: 30px;
+}
+
+.right-language-container {
+    display: flex;
+    margin-right: 30px;
+}

@@ -104,6 +104,14 @@ body {
     transition: background 0.3s;
 }
 
+.print-button.active {
+    background: #222964;
+    color: white;
+}
+.print-button:hover {
+    background: #dcdcdc;
+}
+
 .content-area {
     display: flex;
     justify-content: space-between;

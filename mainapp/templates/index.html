@@ -94,7 +94,8 @@
   </div>
 
   <script>
-    const staticSpeakerUrl = "{% static 'assets/Check.svg' %}";
+    const staticCheckUrl = "{% static 'assets/Check.svg' %}";
+    const csrfToken = "{{ csrf_token }}";
   </script>
 </body>
 </html>

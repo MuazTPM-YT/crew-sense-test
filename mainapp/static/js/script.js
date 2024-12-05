@@ -1,29 +1,73 @@
 function openTab(event, tabName) {
-    const tabContents = document.querySelectorAll('.tab-content');
-    const tabLinks = document.querySelectorAll('.tab-link');
+    $('.tab-content').hide(); 
+    $('.tab-link').removeClass('active'); 
 
-    tabContents.forEach(content => content.style.display = 'none');
-    tabLinks.forEach(link => link.classList.remove('active'));
+    $(`#${tabName}`).show(); 
+    $(event.target).addClass('active'); 
+}
 
-    document.getElementById(tabName).style.display = 'block';
-    event.currentTarget.classList.add('active');
-  }
-
-const left_englishButton = document.getElementById('left-english-btn');
-const left_brailleButton = document.getElementById('left-braille-btn');
-const right_englishButton = document.getElementById('right-english-btn');
-const right_brailleButton = document.getElementById('right-braille-btn');
-
-left_englishButton.addEventListener('click', function () {
-    left_englishButton.classList.add('selected');
-    left_brailleButton.classList.remove('selected');
-    right_brailleButton.classList.add('selected');
-    right_englishButton.classList.remove('selected');
+$('#left-english-btn').click(function () {
+    $(this).addClass('selected'); 
+    $('#left-braille-btn').removeClass('selected'); 
+    $('#right-braille-btn').addClass('selected'); 
+    $('#right-english-btn').removeClass('selected'); 
 });
 
-left_brailleButton.addEventListener('click', function () {
-    left_brailleButton.classList.add('selected');
-    left_englishButton.classList.remove('selected');
-    right_englishButton.classList.add('selected');
-    right_brailleButton.classList.remove('selected');
+$('#left-braille-btn').click(function () {
+    $(this).addClass('selected'); 
+    $('#left-english-btn').removeClass('selected'); 
+    $('#right-english-btn').addClass('selected'); 
+    $('#right-braille-btn').removeClass('selected'); 
 });
+
+$(document).ready(function() {
+    $('.text-input').on('input', function() {
+      var textInput = $(this).val();
+
+      $.ajax({
+        url: '/convert-text-to-braille/',
+        type: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        data: JSON.stringify({ text: textInput }),
+        contentType: 'application/json',
+        success: function(response) {
+
+          $('.content-box-right .text-output').val(response.braille);
+        },
+        error: function(error) {
+          console.error('Error:', error);
+        }
+      });
+    });
+  });
+  
+  document.getElementById("copyButton").addEventListener("click", function () {
+    const icon = document.getElementById("iconImage");
+    const originalSrc = icon.src;
+    const textareaContent = document.querySelector(".text-output").value; 
+
+    navigator.clipboard.writeText(textareaContent).then(() => {
+        console.log("Copied to clipboard!");
+
+        icon.classList.add("hidden");
+
+        setTimeout(function () {
+            icon.src = staticSpeakerUrl;
+            icon.classList.remove("hidden");
+        }, 100);
+
+        setTimeout(function () {
+            icon.classList.add("hidden");
+            setTimeout(function () {
+                icon.src = originalSrc;
+                icon.classList.remove("hidden");
+            }, 100);
+        }, 1500);
+    }).catch(err => {
+        console.error("Failed to copy text: ", err);
+    });
+});
+
+  

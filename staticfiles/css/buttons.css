@@ -54,6 +54,17 @@
 .copy-button:active {
     transform: translateY(0);
 }
+  
+.icon img {
+    transition: opacity 0.3s ease;
+}
+  
+.icon img.hidden {
+    opacity: 0;
+}
+
+
+  
 
 .copy-button .icon img {
     width: 24px; 

@@ -12,11 +12,12 @@
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
   <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
   <script src="{% static 'js/script.js' %}" defer></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  {% csrf_token %}
 </head>
 <body>
   <div class="navbar">
     <div class="brand">Crew Sense</div>
-    <button class="btn-signin">Sign In</button>
   </div>
   
   <!-- Tab Container -->
@@ -37,7 +38,7 @@
       </div>
       
       <div class="swap-icon">
-        <button class="swap-button">
+        <button class="swap-button" id="swap-button-lang">
           <img src="{% static 'assets/Vector.svg' %}" alt="swap-icon">
         </button>
       </div>
@@ -53,7 +54,8 @@
     <!-- Tab Content -->
     <div id="text" class="tab-content">
       <div class="content-area">
-        <!-- Left Content Box -->
+          <!-- Left Content Box -->
+        {% csrf_token %}
         <div class="content-box-left">
           <textarea class="text-input" placeholder="Type here..."></textarea>
           <button class="listen-button">
@@ -66,10 +68,11 @@
         
         <!-- Right Content Box -->
         <div class="content-box-right">
-          <textarea class="text-input" placeholder="Translation"></textarea>
-          <button class="copy-button">
+          <textarea class="text-output" placeholder="Translation"></textarea>
+          <button class="copy-button" id="copyButton">
             <div class="icon">
-              <img src="{% static 'assets/Copy.svg' %}" alt="Copy Icon">
+              {% load static %}
+              <img src="{% static 'assets/Copy.svg' %}" alt="Copy Icon" id="iconImage">
             </div>
             <div class="label"></div>
           </button>
@@ -84,6 +87,14 @@
     <div id="documents" class="tab-content" style="display: none;">
       <p class="text-center">Documents content goes here.</p>
     </div>
+
+    <div class="init-tab-container">
+      <button class="print-button">Print</button>
+    </div>
   </div>
+
+  <script>
+    const staticSpeakerUrl = "{% static 'assets/Check.svg' %}";
+  </script>
 </body>
 </html>

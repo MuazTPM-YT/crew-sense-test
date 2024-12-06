@@ -3,6 +3,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+from django.core.files.storage import FileSystemStorage
+import os
+
 # Create your views here.
 def initial_the_web(request):
     return render(request, 'index.html')
@@ -83,3 +86,40 @@ def convert_text_to_braille(request):
 
         return JsonResponse({'output': output})
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+@csrf_exempt
+def upload_file(request):
+    if request.method == 'POST' and 'file' in request.FILES:
+        uploaded_file = request.FILES['file']
+        fs = FileSystemStorage()
+        filename = fs.save(uploaded_file.name, uploaded_file)
+        file_path = fs.path(filename)
+
+        # Process the file (e.g., extract text)
+        if filename.endswith('.pdf'):
+            text = extract_text_from_pdf(file_path)
+        elif filename.endswith('.docx'):
+            text = extract_text_from_docx(file_path)
+        else:
+            text = "Unsupported file format."
+
+        # Delete the file after processing
+        os.remove(file_path)
+
+        return JsonResponse({'translation': text})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+def extract_text_from_pdf(file_path):
+    import PyPDF2
+    text = ""
+    with open(file_path, 'rb') as file:
+        reader = PyPDF2.PdfReader(file)
+        for page in reader.pages:
+            text += page.extract_text()
+    return text
+
+def extract_text_from_docx(file_path):
+    from docx import Document
+    document = Document(file_path)
+    text = "\n".join([para.text for para in document.paragraphs])
+    return text

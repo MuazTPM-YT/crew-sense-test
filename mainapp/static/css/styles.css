@@ -181,3 +181,39 @@ body {
     display: flex;
     margin-right: 30px;
 }
+
+.upload-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border: none;
+    padding: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  .upload-label {
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .file-input {
+    display: none;
+  }
+
+.upload-label img {
+    width: 300px; 
+    height: 200px;
+}
+
+.drag-drop {
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    font-style: normal;
+    color: #060B2D;
+    margin-top: 10px;
+}

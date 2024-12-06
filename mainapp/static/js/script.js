@@ -93,4 +93,36 @@ $(document).ready(function () {
     });
 });
 
+$(document).ready(function () {
+    $('#fileInput').change(function () {
+      const fileInput = $(this)[0].files[0];
+      if (!fileInput) {
+        alert("No file selected.");
+        return;
+      }
+  
+      const formData = new FormData();
+      formData.append('file', fileInput);
+      formData.append('csrfmiddlewaretoken', csrfToken);
+  
+      // Show a loading indicator (optional)
+      $('.content-box-right .text-output').val("Processing...");
+  
+      $.ajax({
+        url: '/upload-file/',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+          // Update the right content box with the processed result
+          $('.content-box-right .text-output').val(response.translation);
+        },
+        error: function (xhr, status, error) {
+          alert("An error occurred while processing the file. Please try again.");
+        },
+      });
+    });
+  });
+  
   

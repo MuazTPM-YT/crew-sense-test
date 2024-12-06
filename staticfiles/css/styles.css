@@ -159,6 +159,19 @@ body {
     height: 350px;
 }
 
+text-input::-webkit-scrollbar, text-output::-webkit-scrollbar {
+    width: 1em;
+}
+
+text-input::-webkit-scrollbar-track, text-output::-webkit-scrollbar {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+text-input::-webkit-scrollbar-thumb, text-output::-webkit-scrollbar {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
+
 .content-box p {
     margin: 0;
 }
@@ -180,4 +193,40 @@ body {
 .right-language-container {
     display: flex;
     margin-right: 30px;
+}
+
+.upload-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border: none;
+    padding: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  .upload-label {
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .file-input {
+    display: none;
+  }
+
+.upload-label img {
+    width: 275px; 
+    height: 250px;
+}
+
+.drag-drop {
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    font-style: normal;
+    color: #060B2D;
+    margin-top: 5px;
 }

@@ -159,6 +159,19 @@ body {
     height: 350px;
 }
 
+text-input::-webkit-scrollbar, text-output::-webkit-scrollbar {
+    width: 1em;
+}
+
+text-input::-webkit-scrollbar-track, text-output::-webkit-scrollbar {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+text-input::-webkit-scrollbar-thumb, text-output::-webkit-scrollbar {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
+
 .content-box p {
     margin: 0;
 }
@@ -205,8 +218,8 @@ body {
   }
 
 .upload-label img {
-    width: 300px; 
-    height: 200px;
+    width: 275px; 
+    height: 250px;
 }
 
 .drag-drop {
@@ -215,5 +228,5 @@ body {
     font-size: 18px;
     font-style: normal;
     color: #060B2D;
-    margin-top: 10px;
+    margin-top: 5px;
 }

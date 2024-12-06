@@ -3,8 +3,17 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+from docx import Document
+import PyPDF2
+import cv2
+
+import pytesseract
+from PIL import Image
+
 from django.core.files.storage import FileSystemStorage
 import os
+
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'  # Update path to Tesseract if necessary
 
 # Create your views here.
 def initial_the_web(request):
@@ -110,7 +119,6 @@ def upload_file(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 def extract_text_from_pdf(file_path):
-    import PyPDF2
     text = ""
     with open(file_path, 'rb') as file:
         reader = PyPDF2.PdfReader(file)
@@ -119,7 +127,70 @@ def extract_text_from_pdf(file_path):
     return text
 
 def extract_text_from_docx(file_path):
-    from docx import Document
     document = Document(file_path)
     text = "\n".join([para.text for para in document.paragraphs])
     return text
+
+@csrf_exempt
+def upload_image(request):
+    if request.method == 'POST' and 'file' in request.FILES:
+        uploaded_file = request.FILES['file']
+        fs = FileSystemStorage()
+        filename = fs.save(uploaded_file.name, uploaded_file)
+        file_path = fs.path(filename)
+
+        print(f"Uploaded file name: {uploaded_file.name}")
+        print(f"Saved file path: {file_path}")
+
+        try:
+            # Check file extension
+            if not filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp')):
+                os.remove(file_path)  # Remove unsupported files
+                print("Unsupported file format.")
+                return JsonResponse({'error': 'Unsupported file format. Please upload a valid image.'}, status=400)
+
+            # Check if OpenCV can read the file
+            image = cv2.imread(file_path)
+            if image is None:
+                print("OpenCV failed to read the image.")
+                os.remove(file_path)
+                return JsonResponse({'error': 'Error reading the image file. Please ensure it is a valid image.'}, status=400)
+
+            # Convert to grayscale and threshold the image
+            gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            _, thresh_image = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+            # Extract text using pytesseract
+            extracted_text = pytesseract.image_to_string(thresh_image)
+            print(f"Extracted text: {extracted_text}")
+
+            # Clean up file after processing
+            os.remove(file_path)
+
+            # Return extracted text
+            return JsonResponse({'file_content': extracted_text})
+        except Exception as e:
+            print(f"Unexpected error: {str(e)}")
+            os.remove(file_path)
+            return JsonResponse({'error': f'File processing error: {str(e)}'}, status=500)
+
+    print("No file provided in request.")
+    return JsonResponse({'error': 'Invalid request or file not provided.'}, status=400)
+
+
+def extract_text_from_image(image_path):
+    """
+    Extracts text from an image file using Tesseract OCR.
+    """
+    # Load the image
+    image = cv2.imread(image_path)
+
+    # Convert to grayscale
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Apply thresholding for better OCR results
+    _, thresh_image = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    # Use pytesseract to extract text
+    text = pytesseract.image_to_string(thresh_image)
+    return text.strip()

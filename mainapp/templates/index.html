@@ -37,12 +37,6 @@
         <button class="language-button" id="left-braille-btn">Braille</button>
       </div>
       
-      <div class="swap-icon">
-        <button class="swap-button" id="swap-button-lang">
-          <img src="{% static 'assets/Vector.svg' %}" alt="swap-icon">
-        </button>
-      </div>
-      
       <!-- Right Language Buttons -->
       <div class="right-language-container">
         <button class="language-button" id="right-english-btn">English</button>
@@ -84,45 +78,42 @@
     <div id="image" class="tab-content" style="display: none;">
       <div class="content-area">
         <!-- Left Content Box -->
-      {% csrf_token %}
-      <div class="content-box-left">
-        <textarea class="text-input" placeholder="Type here..."></textarea>
-        <button class="listen-button">
-
-          <div class="icon">
-            <img src="{% static 'assets/Speaker.svg' %}" alt="Speaker Icon">
+        <div class="content-box-left" id="docs-tabs">
+          <div class="upload-box">
+            <label for="fileInput" class="upload-label">
+              <img src="{% static 'assets/Upload.svg' %}" alt="Upload Icon" id="UploadIcon">
+              <div class="drag-drop">Supported file types: .jpg, .jpeg, .png</div>
+            </label>
+            <input type="file" id="fileInput" class="file-input" accept=".png, .jpg, .jpeg">
           </div>
-          <div class="label"></div>
-        </button>
+        </div>
+        
+        <!-- Right Content Box -->
+        <div class="content-box-right">
+          <textarea class="text-output" placeholder="Translation"></textarea>
+          <button class="copy-button" id="copyButton">
+            <div class="icon">
+              {% load static %}
+              <img src="{% static 'assets/Copy.svg' %}" alt="Copy Icon" id="iconImage">
+            </div>
+            <div class="label"></div>
+          </button>
+        </div>
       </div>
-      
-      <!-- Right Content Box -->
-      <div class="content-box-right">
-        <textarea class="text-output" placeholder="Translation"></textarea>
-        <button class="copy-button" id="copyButton">
-          <div class="icon">
-            {% load static %}
-            <img src="{% static 'assets/Copy.svg' %}" alt="Copy Icon" id="iconImage">
-          </div>
-          <div class="label"></div>
-        </button>
-      </div>
-    </div>
   </div>
 
   <div id="documents" class="tab-content" style="display: none;">
     <div class="content-area">
       <!-- Left Content Box -->
-      <div class="content-box-left">
+      <div class="content-box-left" id="docs-tabs">
         <div class="upload-box">
           <label for="fileInput" class="upload-label">
-            <img src="{% static 'assets/Upload.svg' %}" alt="Upload Icon">
-            <div class="drag-drop">Drag and Drop</div>
+            <img src="{% static 'assets/Upload.svg' %}" alt="Upload Icon" id="UploadIcon">
+            <div class="drag-drop">Supported file types: .docx, .pdf</div>
           </label>
           <input type="file" id="fileInput" class="file-input" accept=".pdf,.docx">
         </div>
       </div>
-      
       
       <!-- Right Content Box -->
       <div class="content-box-right">

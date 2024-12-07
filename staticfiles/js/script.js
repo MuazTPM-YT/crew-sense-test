@@ -94,6 +94,7 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
+    // File input change handler for documents
     $('#fileInput').change(function () {
         const fileInput = $(this)[0].files[0];
         if (!fileInput) {
@@ -123,29 +124,7 @@ $(document).ready(function () {
                     $('.content-box-left .text-input').val(englishText);
 
                     // Step 2: Translate English text to Braille
-                    $.ajax({
-                        url: '/convert-text-to-braille/', // Backend endpoint for Braille translation
-                        type: 'POST',
-                        headers: {
-                            'X-CSRFToken': csrfToken, // Add CSRF token for Django
-                        },
-                        data: JSON.stringify({ text: englishText, mode: "text_to_braille" }),
-                        contentType: 'application/json',
-                        success: function (brailleResponse) {
-                            if (brailleResponse.output) {
-                                // Show Braille translation in the right content box
-                                $('.content-box-right .text-output').val(brailleResponse.output);
-                            } else {
-                                alert("Translation to Braille failed. No output returned.");
-                                $('.content-box-right .text-output').val("");
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            alert("An error occurred while translating to Braille.");
-                            console.error("Braille Translation Error:", xhr.responseText || error);
-                            $('.content-box-right .text-output').val("Translation error.");
-                        },
-                    });
+                    translateTextToBraille(englishText);
                 } else {
                     alert("File processing failed. No text extracted.");
                     $('.content-box-right .text-output').val("");
@@ -158,14 +137,12 @@ $(document).ready(function () {
             },
         });
     });
-});
 
-// JavaScript (jQuery + Canvas for preprocessing)
-$(document).ready(function () {
-    $('#fileInput').change(function () {
+    // File input change handler for images
+    $('#imageInput').change(function () {
         const fileInput = $(this)[0].files[0];
         if (!fileInput) {
-            alert("No file selected.");
+            alert("No image selected.");
             return;
         }
 
@@ -174,55 +151,109 @@ $(document).ready(function () {
         formData.append('csrfmiddlewaretoken', csrfToken);
 
         // Show a loading indicator
-        $('.content-box-right .text-output').val("Processing...");
+        $('.content-box-right .text-output').val("Processing image...");
 
-        // First step: Extract text from the image
+        // Step 1: Extract text from the image
         $.ajax({
             url: '/upload-image/', // Backend endpoint for extracting text
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false,
-
             success: function (response) {
                 if (response.file_content) {
-                    console.log("Extracted Text: ", response.file_content);
+                    const extractedText = response.file_content;
 
-                    // Second step: Translate extracted text to Braille
-                    $.ajax({
-                        url: '/convert-text-to-braille/', // Backend endpoint for Braille translation
-                        type: 'POST',
-                        headers: {
-                            'X-CSRFToken': '{{ csrf_token }}',
-                        },
-                        data: JSON.stringify({ text: response.file_content, mode: "text_to_braille" }),
-                        contentType: 'application/json',
-                        success: function (brailleResponse) {
-                            if (brailleResponse.output) {
-                                // Update the right content box with Braille output
-                                $('.content-box-right .text-output').val(brailleResponse.output);
-                                console.log("Braille Output: ", brailleResponse.output);
-                            } else {
-                                alert("Failed to get Braille output.");
-                            }
-                        },
-                        error: function (error) {
-                            alert("An error occurred while translating to Braille.");
-                            console.error('Braille Translation Error:', error.responseText || error);
-                        },
-                    });
+                    // Show the extracted text in the left content box
+                    $('.content-box-left .text-input').val(extractedText);
+
+                    // Step 2: Translate extracted text to Braille
+                    translateTextToBraille(extractedText);
                 } else {
-                    alert("Error: No text content extracted from the image.");
-                    console.error("File Processing Error:", response);
+                    alert("No text content extracted from the image.");
+                    $('.content-box-right .text-output').val("");
                 }
             },
             error: function (xhr, status, error) {
                 alert("An error occurred while processing the image.");
-                console.error('Image Upload Error:', xhr.responseText || error);
+                console.error("Image Processing Error:", xhr.responseText || error);
+                $('.content-box-right .text-output').val("Image processing error.");
             },
         });
     });
+
+    // Function to translate text to Braille
+    function translateTextToBraille(text) {
+        $('.content-box-right .text-output').val("Translating to Braille...");
+        $.ajax({
+            url: '/convert-text-to-braille/', // Backend endpoint for Braille translation
+            type: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken, // CSRF token for Django
+            },
+            data: JSON.stringify({ text: text, mode: "text_to_braille" }),
+            contentType: 'application/json',
+            success: function (response) {
+                if (response.output) {
+                    // Show Braille translation in the right content box
+                    $('.content-box-right .text-output').val(response.output);
+                } else {
+                    alert("Failed to translate text to Braille.");
+                    $('.content-box-right .text-output').val("");
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("An error occurred while translating text to Braille.");
+                console.error("Braille Translation Error:", xhr.responseText || error);
+                $('.content-box-right .text-output').val("Translation error.");
+            },
+        });
+    }
 });
 
+$(document).ready(function () {
+    $('.listen-button').on('click', function () {
+      const text = $('.content-box-left .text-input').val(); 
 
+      if (text) {
+        try {
+          const speech = new SpeechSynthesisUtterance(text);
+          window.speechSynthesis.speak(speech);
+        } catch (e) {
+          console.error("Error speaking text:", e);
+        }
+      } else {
+        alert("Please enter some text to speak!");
+      }
+    });
+  });
 
+  $(document).ready(function () {
+    $('.print-button').on('click', function () {
+      const translationContent = $('.content-box-right .text-output').val();
+  
+      if ($.trim(translationContent)) {
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Print Translation</title>
+              <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+              </style>
+            </head>
+            <body>
+              ${translationContent}
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+      } else {
+        alert("There is no content to print!");
+      }
+    });
+  });
+  

@@ -13,9 +13,8 @@ from PIL import Image
 from django.core.files.storage import FileSystemStorage
 import os
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'  # Update path to Tesseract if necessary
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'  
 
-# Create your views here.
 def initial_the_web(request):
     return render(request, 'index.html')
 
@@ -83,7 +82,7 @@ def convert_text_to_braille(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         text_input = data.get('text')
-        mode = data.get('mode')  # Either "text_to_braille" or "braille_to_text"
+        mode = data.get('mode')  
 
         converter = Convertor()
         if mode == "text_to_braille":
@@ -139,44 +138,35 @@ def upload_image(request):
         filename = fs.save(uploaded_file.name, uploaded_file)
         file_path = fs.path(filename)
 
-        print(f"Uploaded file name: {uploaded_file.name}")
-        print(f"Saved file path: {file_path}")
+        print(f"Uploaded file: {uploaded_file.name}, Path: {file_path}")
 
         try:
-            # Check file extension
             if not filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp')):
-                os.remove(file_path)  # Remove unsupported files
-                print("Unsupported file format.")
+                os.remove(file_path)
                 return JsonResponse({'error': 'Unsupported file format. Please upload a valid image.'}, status=400)
 
-            # Check if OpenCV can read the file
             image = cv2.imread(file_path)
             if image is None:
-                print("OpenCV failed to read the image.")
                 os.remove(file_path)
                 return JsonResponse({'error': 'Error reading the image file. Please ensure it is a valid image.'}, status=400)
 
-            # Convert to grayscale and threshold the image
             gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             _, thresh_image = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-            # Extract text using pytesseract
             extracted_text = pytesseract.image_to_string(thresh_image)
-            print(f"Extracted text: {extracted_text}")
+            if not extracted_text.strip():
+                raise ValueError("No text found in the image.")
 
-            # Clean up file after processing
             os.remove(file_path)
-
-            # Return extracted text
             return JsonResponse({'file_content': extracted_text})
+
         except Exception as e:
-            print(f"Unexpected error: {str(e)}")
-            os.remove(file_path)
-            return JsonResponse({'error': f'File processing error: {str(e)}'}, status=500)
+            print(f"Processing error: {str(e)}")
+            if os.path.exists(file_path):
+                os.remove(file_path)
+            return JsonResponse({'error': f'Error during processing: {str(e)}'}, status=500)
 
-    print("No file provided in request.")
     return JsonResponse({'error': 'Invalid request or file not provided.'}, status=400)
-
 
 def extract_text_from_image(image_path):
     """
